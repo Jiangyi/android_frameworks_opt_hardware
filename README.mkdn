@@ -1,4 +1,4 @@
-CyanogenMod Hardware Abstraction Framework
+OmniROM Hardware Abstraction Framework
 ==========================================
 
 What's this?
@@ -19,26 +19,30 @@ UI or layout elements should be included in here.
 How do I use it?
 ----------------
 
-Classes present in this repository are dummies, and should fully implement
-the expected API that'll be used in Settings. 
+Classes present in this repository are for basic hardware tunables support.
+They are designed so that device maintainers should be able to easily edit 
+XML config files in order to activate variables hardware features, as appropriate
+for their device. These classes should fully implementthe expected API
+that'll be used in Settings. 
 
-Each device should implement its own classes for supported hardware 
-tunables, and signal their existence by adding a BOARD_HARDWARE_CLASS 
+Each device is also capable of implementing its own classes for supported 
+hardware tunables which need an unorthodox/custom implementation. The existence
+of such classes should be signaled by adding a BOARD_HARDWARE_CLASS 
 variable to its BoardConfig, pointing to the path where said classes
 can be found. The Nexus4, for instance, has
 
-BOARD_HARDWARE_CLASS := device/lge/mako/cmhw/
+BOARD_HARDWARE_CLASS := device/lge/mako/omnihw/
 
 Every class present in this framework addresses a single tunable;
-Devices don't need to implement all the classes, but for every one
-that _is_ implemented, all methods existing in this dummy implementation
-must be present, since the client applications will expect them to
-be there.
+Devices which require custom classes MUST implement ALL methods that exist
+in the defualt implementation, as the client applications will expect them to
+be present.
 
 Wouldn't it be better if...?
 ----------------------------
 
-There are reasons for this not to be implemented as an interface definition,
-or a set of superclasses. Fully overloading the reference class isn't pretty,
-but at this point it's the most flexible option we have, especially since
-we still haven't fully closed what we're going to put in here.
+Suggestions are always welcome. The choices made in this implementation were
+based on the fact that we aimed to make life easier for device maintainers by
+having them work with a simple XML format rather than Java. Obviously, the
+default classes will not satisfy every device out there, which is why the
+overloading option is present.

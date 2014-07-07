@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2013 The CyanogenMod Project
+ * Copyright (C) 2014 The OmniROM Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +15,13 @@
  * limitations under the License.
  */
 
-package org.cyanogenmod.hardware;
+package org.omnirom.hardware;
+
+import org.omnirom.hardware.util.FileUtils;
+import org.omnirom.hardware.util.DataParser;
+import org.omnirom.hardware.util.DataParser.Data;
+
+import java.io.File;
 
 /*
  * Display gamma calibration
@@ -32,6 +39,10 @@ package org.cyanogenmod.hardware;
  */
 
 public class DisplayGammaCalibration {
+
+    private static Data data = DataParser.getData(R.array.hwf_displayGammaCalib);
+
+    private static final String = data.value[0];
 
     /*
      * All HAF classes should export this boolean.

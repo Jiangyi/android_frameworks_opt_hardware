@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2013 The CyanogenMod Project
+ * Copyright (C) 2014 The OmniROM Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +15,13 @@
  * limitations under the License.
  */
 
-package org.cyanogenmod.hardware;
+package org.omnirom.hardware;
+
+import org.omnirom.hardware.util.FileUtils;
+import org.omnirom.hardware.util.DataParser;
+import org.omnirom.hardware.util.DataParser.Data;
+
+import java.io.File;
 
 /**
  * Adaptive backlight support (this refers to technologies like NVIDIA SmartDimmer,
@@ -22,12 +29,21 @@ package org.cyanogenmod.hardware;
  */
 public class AdaptiveBacklight {
 
+    private static Data data = DataParser.getData(R.array.hwf_adaptiveBacklight);
+
+    private static final String PATH = data.value[0];
     /**
      * Whether device supports an adaptive backlight technology.
      *
      * @return boolean Supported devices must return always true
      */
-    public static boolean isSupported() { return false; }
+    public static boolean isSupported() {
+        if (data.supported && PATH != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * This method return the current activation status of the adaptive backlight technology.
@@ -35,7 +51,13 @@ public class AdaptiveBacklight {
      * @return boolean Must be false when adaptive backlight is not supported or not activated, or
      * the operation failed while reading the status; true in any other case.
      */
-    public static boolean isEnabled() { return false; }
+    public static boolean isEnabled() {
+        if (PATH != null) {
+            return Integer.parseInt(FileUtils.readOneLine(PATH)) == 1);
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
 
     /**
      * This method allows to setup adaptive backlight technology status.
@@ -44,6 +66,24 @@ public class AdaptiveBacklight {
      * @return boolean Must be false if adaptive backlight is not supported or the operation
      * failed; true in any other case.
      */
-    public static boolean setEnabled(boolean status) { return false; }
+    public static boolean setEnabled(boolean bool) {
+        if (PATH != null) {
+            if (bool == true) {
+                return FileUtils.writeLine(PATH, "1");
+            } else {
+                return FileUtils.writeLine(PATH, "0");
+            }
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
 
+    /**
+     * This method returns the type of setting this is
+     *
+     * @return String Used to determine what kind of UI setup this is going to use.
+     */
+    public static String getType() {
+        return data.type;
+    }
 }

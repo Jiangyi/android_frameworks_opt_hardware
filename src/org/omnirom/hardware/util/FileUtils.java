@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.cyanogenmod.hardware.util;
+package org.omnirom.hardware.util;
 
 import android.util.Log;
 

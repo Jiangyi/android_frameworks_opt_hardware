@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2013 The CyanogenMod Project
+ * Copyright (C) 2014 The OmniROM Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +15,11 @@
  * limitations under the License.
  */
 
-package org.cyanogenmod.hardware;
+package org.omnirom.hardware;
+
+import org.omnirom.hardware.util.FileUtils;
+import org.omnirom.hardware.util.DataParser;
+import org.omnirom.hardware.util.DataParser.Data;
 
 import java.io.File;
 
@@ -23,26 +28,42 @@ import java.io.File;
  */
 public class LongTermOrbits {
 
+    private static Data data = DataParser.getData(R.array.hwf_longTermOrbit);
+
+    private static final String LTO_SRC = data.value[0];
+    private static final File LTO_DST = new File(data.value[1]);
+    private static final long DOWNLOAD_INTERVAL_DEFAULT = Long.parseLong(data.value[2]);
+
     /**
      * Whether device supports the LTO technology.
      *
      * @return boolean Supported devices must return always true.
      */
-    public static boolean isSupported() { return false; }
+    public static boolean isSupported() {
+        if (data.supported && LTO_DST.exists()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Returns the source location of the LTO data.
      *
      * @return String The LTO source location.
      */
-    public static String getSourceLocation() { return null; }
+    public static String getSourceLocation() {
+        return LTO_SRC;
+    }
 
     /**
      * Returns the source location of the LTO data.
      *
      * @return File The LTO source location.
      */
-    public static File getDestinationLocation() { return null; }
+    public static File getDestinationLocation() {
+        return LTO_DST;
+    }
 
     /**
      * Returns the interval in milliseconds to trigger the LTO data download.<br/>
@@ -52,6 +73,16 @@ public class LongTermOrbits {
      *
      * @return long The download interval in milliseconds
      */
-    public static long getDownloadInterval() { return 0; }
+    public static long getDownloadInterval() {
+        return DOWNLOAD_INTERVAL_DEFAULT;
+    }
 
+    /**
+     * This method returns the type of setting this is
+     *
+     * @return String Used to determine what kind of UI setup this is going to use.
+     */
+    public static String getType() {
+        return data.type;
+    }
 }

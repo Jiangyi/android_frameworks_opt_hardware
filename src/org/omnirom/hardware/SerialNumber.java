@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2014 The CyanogenMod Project
+ *                    The OmniROM Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +15,13 @@
  * limitations under the License.
  */
 
-package org.cyanogenmod.hardware;
+package org.omnirom.hardware;
+
+import org.omnirom.hardware.util.FileUtils;
+import org.omnirom.hardware.util.DataParser;
+import org.omnirom.hardware.util.DataParser.Data;
+
+import java.io.File;
 
 /**
  * Support for displaying a different serial number in Settings -> About Phone
@@ -23,16 +30,36 @@ package org.cyanogenmod.hardware;
  */
 public class SerialNumber {
 
+    private static Data data = DataParser.getData(R.array.hwf_altSerialNumber);
+
+    private static final String PATH = data.value[0];
+
     /**
      * Whether device requires an alternative serial number.
      *
      * @return boolean Supported devices must return always true
      */
-    public static boolean isSupported() { return false; }
+    public static boolean isSupported() {
+        if (data.supported && PATH != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Returns the alternative serial number to be displayed.
      */
-    public static String getSerialNumber() { return null; }
+    public static String getSerialNumber() {
+        return FileUtils.readOneLine(PATH);
+    }
 
+    /**
+     * This method returns the type of setting this is
+     *
+     * @return String Used to determine what kind of UI setup this is going to use.
+     */
+    public static String getType() {
+        return data.type;
+    }
 }
