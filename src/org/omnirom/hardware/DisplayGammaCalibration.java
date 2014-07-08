@@ -17,12 +17,6 @@
 
 package org.omnirom.hardware;
 
-import org.omnirom.hardware.util.FileUtils;
-import org.omnirom.hardware.util.DataParser;
-import org.omnirom.hardware.util.DataParser.Data;
-
-import java.io.File;
-
 /*
  * Display gamma calibration
  *
@@ -39,10 +33,6 @@ import java.io.File;
  */
 
 public class DisplayGammaCalibration {
-
-    private static Data data = DataParser.getData(R.array.hwf_displayGammaCalib);
-
-    private static final String = data.value[0];
 
     /*
      * All HAF classes should export this boolean.

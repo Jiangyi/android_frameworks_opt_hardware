@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2013 The CyanogenMod Project
+ * Copyright (C) 2014 The OmniROM Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +15,13 @@
  * limitations under the License.
  */
 
-package org.cyanogenmod.hardware;
+package org.omnirom.hardware;
+
+import org.omnirom.hardware.util.FileUtils;
+import org.omnirom.hardware.util.DataParser;
+import org.omnirom.hardware.util.DataParser.Data;
+
+import java.io.File;
 
 /* 
  * Display RGB intensity calibration (kcal)
@@ -32,12 +39,63 @@ package org.cyanogenmod.hardware;
 
 public class DisplayColorCalibration {
 
+    private static Data data = DataParser.getData(R.array.hwf_displayColorCaLib);
+
+    private static int numOfValues = data.value.length;
+
+    // We support the four most common color calibration methods
+    private static String COLOR_FILE;
+    private static String COLOR_FILE_CTRL;
+    private static String[] COLOR_CHANNEL_FILE;
+    private static String COLOR_MIN;
+    private static String COLOR_MAX;
+    private static String COLOR_DEF;
+
+    // 3 of the values are max, min, and default; The rest are paths
+    if (numOfValues - 3 == 1) {
+        // Only one path for color calibration
+        COLOR_FILE = data.value[0];
+        COLOR_MIN = data.value[1];
+        COLOR_MAX = data.value[2];
+        COLOR_DEF = data.value[3];
+    } else if (numOfValues - 3 == 2) {
+        // One path for color calibration, the other for control
+        COLOR_FILE = data.value[0];
+        COLOR_FILE_CTRL = data.value[1];
+        COLOR_MIN = data.value[2];
+        COLOR_MAX = data.value[3];
+        COLOR_DEF = data.value[4];
+    } else if (numOfValues - 3 == 3) {
+        // Three paths for R, G, B respectively
+        COLOR_CHANNEL_FILE = new String[] { data.value[0],
+                                    data.value[1],
+                                    data.value[2] };
+        COLOR_MIN = data.value[3];
+        COLOR_MAX = data.value[4];
+        COLOR_DEF = data.value[5];
+    } else if (numOfValues - 3 == 4) {
+        // Three paths for R, G, B respectively, plus an alternate path
+        COLOR_FILE = data.value[0];
+        COLOR_CHANNEL_FILE = new String[] { data.value[1],
+                                    data.value[2],
+                                    data.value[3] };
+        COLOR_MIN = data.value[4];
+        COLOR_MAX = data.value[5];
+        COLOR_DEF = data.value[6];
+    }
+
     /*
      * All HAF classes should export this boolean.
      * Real implementations must, of course, return true
      */
 
-    public static boolean isSupported() { return false; }
+    public static boolean isSupported() {
+        if (data.supported && COLOR_FILE != null || COLOR_CHANNEL_FILE[0] != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /*
      * Set the RGB values to the given input triplet. Input is
@@ -47,7 +105,24 @@ public class DisplayColorCalibration {
      */
 
     public static boolean setColors(String colors) {
-        throw new UnsupportedOperationException();
+        if (COLOR_FILE != null) {
+            boolean result = FileUtils.writeLine(COLOR_FILE, colors);
+            if (result && COLOR_FILE_CTRL != null) {
+                result = FileUtils.writeLine(COLOR_FILE_CTRL, "1");
+            }
+            return result;
+        } else if (COLOR_CHANNEL_FILE[0] != null) {
+            String[] valuesSplit = colors.split(" ");
+
+            boolean result = true;
+            for (int i = 0; i < valuesSplit.length; i++) {
+                String targetFile = COLOR_FILE[i];
+                result &= FileUtils.writeLine(COLOR_FILE[i], valuesSplit[i]);
+            }
+            return result;
+        } else {
+           throw new UnsupportedOperationException();
+        }
     }
 
     /*
@@ -55,7 +130,11 @@ public class DisplayColorCalibration {
      */
 
     public static int getMaxValue() {
-        return -1;
+        if (COLOR_MAX != null) {
+            return Integer.parseInt(COLOR_MAX);
+        } else {
+            throw UnsupportedOperationException();
+        }
     }
 
     /*
@@ -63,7 +142,11 @@ public class DisplayColorCalibration {
      */
 
     public static int getMinValue() {
-        return -1;
+        if (COLOR_MIN != null) {
+            return Integer.parseInt(COLOR_MIN);
+        } else {
+            throw UnsupportedOperationException();
+        }
     }
 
     /*
@@ -71,7 +154,11 @@ public class DisplayColorCalibration {
      */
 
     public static int getDefValue() {
-        return -1;
+        if (COLOR_DEF != null) {
+            return Integer.parseInt(COLOR_DEF);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     /*
@@ -81,6 +168,16 @@ public class DisplayColorCalibration {
      */
 
     public static String getCurColors() {
-        return "0 0 0";
+        if (COLOR_FILE != null) {
+            return FileUtils.readOneLine(COLOR_FILE);
+        } else if (COLOR_CHANNEL_FILE[0] != null) {
+            StringBuilder value = new StringBuilder()
+            for (String filePath : COLOR_CHANNEL_FILE) {
+                values.append(FileUtils.readOneLine(filePath)).append(" ");
+            }
+            return values.toString();
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 }
