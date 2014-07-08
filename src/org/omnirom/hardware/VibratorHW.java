@@ -132,7 +132,7 @@ public class VibratorHW {
                return Integer.parseInt(LEVEL_WARNING);
             }
         } else {
-            throw new UnsupportedOperationException();
+            return -1;
         }
     }
 
@@ -163,10 +163,10 @@ public class VibratorHW {
             File f = new File(LEVEL_DEFAULT);
 
             if (f.exists()) {
-               return Integer.parseInt(FileUtils.readOneLine(LEVEL_WARNING));
+               return Integer.parseInt(FileUtils.readOneLine(LEVEL_DEFAULT));
             } else {
             // LEVEL_WARNING might simply be an integer, not a path
-               return Integer.parseInt(LEVEL_WARNING);
+               return Integer.parseInt(LEVEL_DEFAULT);
             }
         } else {
             throw new UnsupportedOperationException();

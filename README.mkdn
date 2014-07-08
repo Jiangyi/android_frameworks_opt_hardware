@@ -20,14 +20,14 @@ How do I use it?
 ----------------
 
 Classes present in this repository are for basic hardware tunables support.
-They are designed so that device maintainers should be able to easily edit 
+They are designed so that device maintainers should be able to easily edit
 XML config files in order to activate variables hardware features, as appropriate
 for their device. These classes should fully implementthe expected API
-that'll be used in Settings. 
+that'll be used in Settings.
 
-Each device is also capable of implementing its own classes for supported 
+Each device is also capable of implementing its own classes for supported
 hardware tunables which need an unorthodox/custom implementation. The existence
-of such classes should be signaled by adding a BOARD_HARDWARE_CLASS 
+of such classes should be signaled by adding a BOARD_HARDWARE_CLASS
 variable to its BoardConfig, pointing to the path where said classes
 can be found. The Nexus4, for instance, has
 
