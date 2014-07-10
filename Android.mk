@@ -16,8 +16,8 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-ifneq ($(BOARD_HARDWARE_CLASS),)
-    $(foreach bcp,$(BOARD_HARDWARE_CLASS), \
+ifneq ($(BOARD_HARDWARE_CLASS_OVERRIDE),)
+    $(foreach bcp,$(BOARD_HARDWARE_CLASS_OVERRIDE), \
         $(eval LOCAL_SRC_FILES += $(call all-java-files-under, ../../../$(bcp))))
 endif
 

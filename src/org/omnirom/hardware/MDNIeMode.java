@@ -17,6 +17,8 @@
 
 package org.omnirom.hardware;
 
+import com.android.internal.R;
+
 import org.omnirom.hardware.util.FileUtils;
 import org.omnirom.hardware.util.DataParser;
 import org.omnirom.hardware.util.DataParser.Data;
@@ -28,7 +30,8 @@ import java.io.File;
  */
 public class MDNIeMode {
 
-    private static Data data = DataParser.getData(R.array.hwf_mDNIeMode);
+    private static DataParser dp;
+    private static Data data = dp.getData(com.android.internal.R.array.hwf_mDNIeMode);
 
     private static final String PATH = data.value[0];
     private static final String MODE_DEFAULT = data.value[1];
@@ -77,7 +80,7 @@ public class MDNIeMode {
         File f = new File(PATH);
 
         if (f.exists()) {
-            return FileUtils.writeLine(PATH, mode);
+            return FileUtils.writeLine(PATH, String.valueOf(mode));
         } else {
             return false;
         }

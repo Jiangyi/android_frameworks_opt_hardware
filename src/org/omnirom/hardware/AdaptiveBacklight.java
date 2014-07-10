@@ -17,6 +17,8 @@
 
 package org.omnirom.hardware;
 
+import com.android.internal.R;
+
 import org.omnirom.hardware.util.FileUtils;
 import org.omnirom.hardware.util.DataParser;
 import org.omnirom.hardware.util.DataParser.Data;
@@ -29,7 +31,8 @@ import java.io.File;
  */
 public class AdaptiveBacklight {
 
-    private static Data data = DataParser.getData(R.array.hwf_adaptiveBacklight);
+    private static DataParser dp;
+    private static Data data = dp.getData(com.android.internal.R.array.hwf_adaptiveBacklight);
 
     private static final String PATH = data.value[0];
     /**
@@ -53,7 +56,7 @@ public class AdaptiveBacklight {
      */
     public static boolean isEnabled() {
         if (PATH != null) {
-            return Integer.parseInt(FileUtils.readOneLine(PATH)) == 1);
+            return Integer.parseInt(FileUtils.readOneLine(PATH)) == 1;
         } else {
             throw new UnsupportedOperationException();
         }

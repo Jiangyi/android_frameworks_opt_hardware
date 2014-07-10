@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.omnirom.hardware;
+package org.omnirom.hardware.util;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -31,31 +31,37 @@ I imagine it to look something like:
     <item>path</item> <-- Path will always be the last, since some functions will require more than one path
 </array>
 */
+    private static Context mContext;
+
+    // Everything needs a context )-:
+    public DataParser(Context context) {
+        mContext = context;
+    }
+
     public class Data {
         public boolean supported;
         public String type;
         public String[] value;
     }
-    private final Context context = this;
 
     private static final int SUPPORTED = 0;
     private static final int TYPE = 1;
+    private static Data data;
 
     // Components call this method to 
     public static Data getData(int id) {
-        Resources res = context.getResources();
+        Resources res = mContext.getResources();
         TypedArray ta = res.obtainTypedArray(id);
-        Data data = new Data();
 
         // Parse data and store in object
         data.supported = ta.getBoolean(SUPPORTED, false);
         data.type = ta.getString(TYPE);
 
         int numOfPaths = ta.length() - 2; //Whatever is left in the array would be paths
-        data.paths = new String[numOfPaths];
+        data.value = new String[numOfPaths];
 
         for (int i = 0; i < numOfPaths; i++) {
-            data.values[i] = ta.getString(i + 2);
+            data.value[i] = ta.getString(i + 2);
         }
 
         // Cleanup and return

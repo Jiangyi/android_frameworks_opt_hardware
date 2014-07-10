@@ -17,6 +17,8 @@
 
 package org.omnirom.hardware;
 
+import com.android.internal.R;
+
 import org.omnirom.hardware.util.FileUtils;
 import org.omnirom.hardware.util.DataParser;
 import org.omnirom.hardware.util.DataParser.Data;
@@ -28,7 +30,8 @@ import java.io.File;
  */
 public class LongTermOrbits {
 
-    private static Data data = DataParser.getData(R.array.hwf_longTermOrbits);
+    private static DataParser dp;
+    private static Data data = dp.getData(com.android.internal.R.array.hwf_longTermOrbits);
 
     private static final String LTO_SRC = data.value[0];
     private static final File LTO_DST = new File(data.value[1]);

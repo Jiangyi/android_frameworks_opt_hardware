@@ -17,6 +17,8 @@
 
 package org.omnirom.hardware;
 
+import com.android.internal.R;
+
 import org.omnirom.hardware.util.FileUtils;
 import org.omnirom.hardware.util.DataParser;
 import org.omnirom.hardware.util.DataParser.Data;
@@ -41,7 +43,8 @@ import java.io.File;
 /* This would be just "Vibrator", but it conflicts with android.os.Vibrator */
 public class VibratorHW {
 
-    private static Data data = DataParser.getData(R.array.hwf_vibrator);
+    private static DataParser dp;
+    private static Data data = dp.getData(com.android.internal.R.array.hwf_vibrator);
 
     private static final String LEVEL_PATH = data.value[0];
     private static final String LEVEL_MAX = data.value[1];
